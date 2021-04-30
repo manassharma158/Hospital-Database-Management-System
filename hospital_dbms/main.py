@@ -9,7 +9,7 @@ app.config['MYSQL_USER'] = "root"
 # create username = hospital_admin
 # password = "cse2018"
 # Add your root password below
-app.config['MYSQL_PASSWORD'] = ""
+app.config['MYSQL_PASSWORD'] = "Mitul@259"
 app.config['MYSQL_DB'] = "hospital"
 
 mysql = MySQL(app)
@@ -39,6 +39,31 @@ def patients():
         return render_template('patients.html', patients_info=patients_info)
 
     return ("<h2>No patient entry in the database</h2>")
+
+@app.route('/delete', methods=['GET', 'POST'])
+def employee_deletion():
+    if request.method == 'POST':
+        info = request.form['info']
+        eid = info.split(' ')[0]
+        print(eid)
+        cur = mysql.connection.cursor()
+        eids = cur.execute("SELECT id FROM employees")
+        eids = cur.fetchall()
+
+        # checking for invalid deletion
+        eid = (eid,)
+        if eid not in eids:
+            return ('<h2>Employee with this ID doesnot exists. Please enter valid ID.</h2>')
+
+        cur.execute("DELETE FROM employees WHERE id = \'{}\'".format(eid[0]))
+        mysql.connection.commit()
+        cur.close()
+        return render_template('deleted_successfully.html', info = info)
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, name, designation FROM employees")
+    employees_info = cur.fetchall()
+    return render_template('employee_deletion.html', employees_info=employees_info)
 
 
 @app.route('/register', methods=['GET', 'POST'])

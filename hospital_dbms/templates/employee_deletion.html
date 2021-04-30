@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="jumbotron">
+
+  <h3>Choose the employee to delete:</h3>
+
+  <form method="POST">
+
+    <select class="form-control" id='id' name='info'>
+      {% for employee in employees_info %}
+      <option>{{ employee[0] }} - {{ employee[1]}} [{{employee[2]}}]</option>
+      {% endfor %}
+    </select>
+
+    <input type="submit" value='Delete' class="btn btn-danger">
+
+  </form>
+
+</div>
+
+{% endblock %}
