@@ -6,9 +6,8 @@ app = Flask(__name__)
 # Database confirgurations
 app.config['MYSQL_HOST'] = "localhost"
 app.config['MYSQL_USER'] = "hospital_admin"
-# create username = hospital_admin
-# password = "cse2018"
-# Add your root password below
+# create user with username = hospital_admin and password = "cse2018"
+# grant all privileges on hospital database to hospital_admin
 app.config['MYSQL_PASSWORD'] = "cse2018"
 app.config['MYSQL_DB'] = "hospital"
 
