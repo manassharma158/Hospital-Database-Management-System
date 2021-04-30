@@ -5,9 +5,11 @@ app = Flask(__name__)
 
 # Database confirgurations
 app.config['MYSQL_HOST'] = "localhost"
-app.config['MYSQL_USER'] = "root"
+app.config['MYSQL_USER'] = "hospital_admin"
+# create username = hospital_admin
+# password = "cse2018"
 # Add your root password below
-app.config['MYSQL_PASSWORD'] = ""
+app.config['MYSQL_PASSWORD'] = "cse2018"
 app.config['MYSQL_DB'] = "hospital"
 
 mysql = MySQL(app)
