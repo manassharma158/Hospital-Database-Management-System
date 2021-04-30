@@ -1,5 +1,32 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
+
+
+<div class="container text-center">
+	<div class="row" align = "center">
+		<div class="col-sm">
+			<div class="card" style="width: 18rem;">
+				<img class="card-img-top" src="static/Patient_card.jpeg" alt="Card image cap">
+				<div class="card-body">
+					<h5 class="card-title">Patient Registration</h5>
+					<p class="card-text">Get yourself registered Here.</p>
+					<a href="/patient-info" class="btn btn-primary">Register</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm">
+			<div class="card" style="width: 18rem;">
+				<img class="card-img-top" src="static/Patient_card.jpeg" alt="Card image cap">
+				<div class="card-body">
+					<h5 class="card-title">Patient Details</h5>
+					<p class="card-text">All Patient information</p>
+					<a href="/patient-info" class="btn btn-primary">here</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 {% endblock %}

@@ -6,8 +6,9 @@ app = Flask(__name__)
 # Database confirgurations
 app.config['MYSQL_HOST'] = "localhost"
 app.config['MYSQL_USER'] = "hospital_admin"
-# create user with username = hospital_admin and password = "cse2018"
-# grant all privileges on hospital database to hospital_admin
+# create username = hospital_admin
+# password = "cse2018"
+# Add your root password below
 app.config['MYSQL_PASSWORD'] = "cse2018"
 app.config['MYSQL_DB'] = "hospital"
 
@@ -41,70 +42,89 @@ def patients():
 
 @app.route('/delete', methods=['GET', 'POST'])
 def employee_deletion():
-    if request.method == 'POST':
-        info = request.form['info']
-        eid = info.split(' ')[0]
-        print(eid)
-        cur = mysql.connection.cursor()
-        eids = cur.execute("SELECT id FROM employees")
-        eids = cur.fetchall()
+	if request.method == 'POST':
+		info = request.form['info']
+		eid = info.split(' ')[0]
+		designation = info.split(' ')[-1]
+		print(eid)
+		cur = mysql.connection.cursor()
+		eids = cur.execute("SELECT id FROM employees")
+		eids = cur.fetchall()
+		# checking for invalid deletion
+		eid = (eid,)
+		if eid not in eids:
+			return ('<h2>Employee with this ID doesnot exists. Please enter valid ID.</h2>')
+		else:
+			if designation == "[Doctor]":
+				cur.execute("DELETE FROM doctors WHERE id = \'{}\'".format(eid[0]))
+			elif designation == "[Nurses]":
+				cur.execute("DELETE FROM nurses WHERE id = \'{}\'".format(eid[0]))
+			else:
+				cur.execute("DELETE FROM management_staff WHERE id = \'{}\'".format(eid[0]))
 
-        # checking for invalid deletion
-        eid = (eid,)
-        if eid not in eids:
-            return ('<h2>Employee with this ID doesnot exists. Please enter valid ID.</h2>')
+			cur.execute("DELETE FROM employees WHERE id = \'{}\'".format(eid[0]))
+			mysql.connection.commit()
+			cur.close()
+			return render_template('deleted_successfully.html', info = info)
 
-        cur.execute("DELETE FROM employees WHERE id = \'{}\'".format(eid[0]))
-        mysql.connection.commit()
-        cur.close()
-        return render_template('deleted_successfully.html', info = info)
-
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT id, name, designation FROM employees")
-    employees_info = cur.fetchall()
-    return render_template('employee_deletion.html', employees_info=employees_info)
+	cur = mysql.connection.cursor()
+	cur.execute("SELECT id, name, designation FROM employees")
+	employees_info = cur.fetchall()
+	return render_template('employee_deletion.html', employees_info=employees_info)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def employee_reg():
-    if request.method == 'POST':
-        id = request.form['id']
-        name = request.form['name']
-        contact = request.form['contact']
-        designation = request.form['designation']
-        email = request.form['email']
-        address = request.form['address']
-        salary = request.form['salary']
+	if request.method == 'POST':
+		id = request.form['id']
+		name = request.form['name']
+		contact = request.form['contact']
+		designation = request.form['designation']
+		email = request.form['email']
+		address = request.form['address']
+		salary = request.form['salary']
 
-        cur = mysql.connection.cursor()
+		cur = mysql.connection.cursor()
 
-        ids = cur.execute("SELECT id FROM employees")
-        ids = cur.fetchall()
+		ids = cur.execute("SELECT id FROM employees")
+		ids = cur.fetchall()
 
-        # checking for duplicate entry
-        eid = (id,)
-        if eid in ids:
-            return ('<h2>Employee with this ID already exists. Try with another ID.</h2>')
+		# checking for duplicate entry
+		eid = (id,)
+		if eid in ids:
+		    return ('<h2>Employee with this ID already exists. Try with another ID.</h2>')
+		else:
+			if designation == "Doctor":
+				cur.execute("call hire_doctor(\'%s\',\'%s\', \'%s\', NULL,\'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
+			elif designation == "Nurse":
+				cur.execute("call hire_nurse(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
+			else:
+				curr.execute("call hire_management(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
 
-        ## call procedures added
-        if designation == "Doctor":
-            cur.execute("call hire_doctor(\'%s\',\'%s\', \'%s\', NULL,\'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
-        elif designation == "Nurse":
-            cur.execute("call hire_nurse(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
-        else:
-            cur.execute("call hire_management(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
 
-#       cur.execute("INSERT into employees(ID, name, contact, designation, email, address, salary) values (\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', %.2f) " % (id, name, contact, designation, email, address, float(salary)))
+		mysql.connection.commit()
+		cur.close()
+		return redirect(url_for('success'))
 
-        mysql.connection.commit()
-        cur.close()
-        return redirect(url_for('success'))
-
-    return render_template('employee_registration.html')
+	return render_template('employee_registration.html')
 
 @app.route('/success', methods=['GET', 'POST'])
 def success():
-    return render_template('employee_registered.html')
+	cur = mysql.connection.cursor()
+	employees = cur.execute("SELECT * from employees")
+	employee_info = cur.fetchall()
+
+@app.route('/patient-index')
+def patient_index():
+	return render_template('patient_index.html')
+
+@app.route('/admin-index')
+def admin_index():
+	return render_template('admin_index.html')
+
+@app.route('/staff-index')
+def staff_index():
+	return render_template('staff_index.html')
 
 
 if __name__ == '__main__':
