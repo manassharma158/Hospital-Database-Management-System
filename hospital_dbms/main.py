@@ -23,7 +23,6 @@ def employees():
     cur = mysql.connection.cursor()
     employees = cur.execute("SELECT * from Employees")
 
-
     if employees > 0:
         employee_info = cur.fetchall()
         return render_template('employee.html', employee_info=employee_info)
@@ -55,7 +54,7 @@ def employee_reg():
 
         cur = mysql.connection.cursor()
 
-        ids = cur.execute("select id from employees")
+        ids = cur.execute("SELECT id FROM employees")
         ids = cur.fetchall()
 
         # checking for duplicate entry
@@ -63,7 +62,7 @@ def employee_reg():
         if eid in ids:
             return ('<h2>Employee with this ID already exists. Try with another ID.</h2>')
 
-        cur.execute("INSERT INTO Employees (ID, name, contact, designation, email, address, salary) VALUES (%s, %s, %s, %s, %s, %s, %.2f);" % (id, name, contact, designation, email, address, float(salary)))
+        cur.execute("INSERT into employees(ID, name, contact, designation, email, address, salary) values (\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', %.2f) " % (id, name, contact, designation, email, address, float(salary)))
 
         mysql.connection.commit()
         cur.close()
