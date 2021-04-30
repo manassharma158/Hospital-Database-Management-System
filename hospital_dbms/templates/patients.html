@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Patients Info</h1>
+
+<table border="1">
+  <tr>
+    <th scope="col">PatientID</th>
+    <th scope="col">Name</th>
+    <th scope="col">Phone</th>
+    <th scope="col">Date of Birth</th>
+    <th scope="col">Address</th>
+
+  </tr>
+  {% for patient in patients_info %}
+  <tr>
+    <td>{{ patient[0] }}</td>
+    <td>{{ patient[1] }}</td>
+    <td>{{ patient[2] }}</td>
+    <td>{{ patient[3] }}</td>
+    <td>{{ patient[4] }}</td>
+
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
