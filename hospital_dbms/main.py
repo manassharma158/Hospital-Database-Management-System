@@ -87,7 +87,16 @@ def employee_reg():
         if eid in ids:
             return ('<h2>Employee with this ID already exists. Try with another ID.</h2>')
 
-        cur.execute("INSERT into employees(ID, name, contact, designation, email, address, salary) values (\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', %.2f) " % (id, name, contact, designation, email, address, float(salary)))
+		## call procedures added
+
+		if designation == "Doctor":
+			cur.execute("call hire_doctor(\'%s\',\'%s\', \'%s\', NULL,\'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
+		elif designation == "Nurse":
+			cur.execute("call hire_nurse(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
+		else:
+			curr.execute("call hire_management(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
+
+#       cur.execute("INSERT into employees(ID, name, contact, designation, email, address, salary) values (\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', %.2f) " % (id, name, contact, designation, email, address, float(salary)))
 
         mysql.connection.commit()
         cur.close()
