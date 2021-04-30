@@ -5,11 +5,11 @@ app = Flask(__name__)
 
 # Database confirgurations
 app.config['MYSQL_HOST'] = "localhost"
-app.config['MYSQL_USER'] = "hospital_admin"
+app.config['MYSQL_USER'] = "root"
 # create username = hospital_admin
 # password = "cse2018"
 # Add your root password below
-app.config['MYSQL_PASSWORD'] = "cse2018"
+app.config['MYSQL_PASSWORD'] = ""
 app.config['MYSQL_DB'] = "hospital"
 
 mysql = MySQL(app)
@@ -22,6 +22,7 @@ def index():
 def employees():
     cur = mysql.connection.cursor()
     employees = cur.execute("SELECT * from Employees")
+
 
     if employees > 0:
         employee_info = cur.fetchall()
@@ -38,12 +39,11 @@ def patients():
         patients_info = cur.fetchall()
         return render_template('patients.html', patients_info=patients_info)
 
-    return ("<h2>No employee entry in the database</h2>")
+    return ("<h2>No patient entry in the database</h2>")
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def employee_reg():
-
     if request.method == 'POST':
         id = request.form['id']
         name = request.form['name']
@@ -54,21 +54,24 @@ def employee_reg():
         salary = request.form['salary']
 
         cur = mysql.connection.cursor()
-        # employees = cur.execute("SELECT id from Employees").fetchall()
-        #
-        # if id in employees[0]:
-        #     return ('<h2>Employee with this ID already exists. Try with another ID.</h2>')
 
-        cur.execute("INSERT INTO employees (id, name, contact, designation, email, address, salary) VALUES (%s, %s, %d, %s, %s, %s, %s, %d)",(id, name, contact, designation, email, address, salary))
+        ids = cur.execute("select id from employees")
+        ids = cur.fetchall()
+
+        # checking for duplicate entry
+        eid = (id,)
+        if eid in ids:
+            return ('<h2>Employee with this ID already exists. Try with another ID.</h2>')
+
+        cur.execute("INSERT INTO Employees (ID, name, contact, designation, email, address, salary) VALUES (%s, %s, %s, %s, %s, %s, %.2f);" % (id, name, contact, designation, email, address, float(salary)))
 
         mysql.connection.commit()
         cur.close()
-
         return redirect(url_for('success'))
 
     return render_template('employee_registration.html')
 
-@app.route('/success')
+@app.route('/success', methods=['GET', 'POST'])
 def success():
     return render_template('employee_registered.html')
 
