@@ -92,7 +92,7 @@ def employee_reg():
 		# checking for duplicate entry
 		eid = (id,)
 		if eid in ids:
-		    return ('<h2>Employee with this ID already exists. Try with another ID.</h2>')
+		    return render_template("already_exists.html", id = id, name = name)
 		else:
 			if designation == "Doctor":
 				cur.execute("call hire_doctor(\'%s\',\'%s\', \'%s\', NULL,\'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
@@ -110,9 +110,7 @@ def employee_reg():
 
 @app.route('/success', methods=['GET', 'POST'])
 def success():
-	cur = mysql.connection.cursor()
-	employees = cur.execute("SELECT * from employees")
-	employee_info = cur.fetchall()
+	return render_template("employee_registered.html")
 
 @app.route('/patient-index')
 def patient_index():

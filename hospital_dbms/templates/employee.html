@@ -2,29 +2,31 @@
 
 {% block content %}
 
-<h1>Employees Info</h1>
+<h1 style = "text-align:center">Employees Info</h1>
+<div class="container">
+	<table class='table table-striped' border="1">
+	  <tr class='thead-dark'>
+	    <th scope="col">EmployeeID</th>
+	    <th scope="col">Name</th>
+	    <th scope="col">Phone</th>
+	    <th scope="col">Designation</th>
+	    <th scope="col">Email</th>
+	    <th scope="col">Address</th>
 
-<table class='table table-striped' border="1">
-  <tr class='thead-dark'>
-    <th scope="col">EmployeeID</th>
-    <th scope="col">Name</th>
-    <th scope="col">Phone</th>
-    <th scope="col">Designation</th>
-    <th scope="col">Email</th>
-    <th scope="col">Address</th>
+	  </tr>
+	  {% for employee in employee_info %}
+	  <tr>
+	    <td>{{ employee[0] }}</td>
+	    <td>{{ employee[1] }}</td>
+	    <td>{{ employee[2] }}</td>
+	    <td>{{ employee[3] }}</td>
+	    <td>{{ employee[4] }}</td>
+	    <td>{{ employee[5] }}</td>
 
-  </tr>
-  {% for employee in employee_info %}
-  <tr>
-    <td>{{ employee[0] }}</td>
-    <td>{{ employee[1] }}</td>
-    <td>{{ employee[2] }}</td>
-    <td>{{ employee[3] }}</td>
-    <td>{{ employee[4] }}</td>
-    <td>{{ employee[5] }}</td>
+	  </tr>
+	  {% endfor %}
+	</table>
+</div>
 
-  </tr>
-  {% endfor %}
-</table>
 
 {% endblock %}

@@ -10,31 +10,5 @@ Employee Registration was successful!
 </div>
 
 <a href="/employees"><button type="button" class="btn btn-primary">View Updated Employeelist</button></a>
-
 </div>
-<h1>Employees Info</h1>
-
-<table border="1">
-  <tr>
-    <th scope="col">EmployeeID</th>
-    <th scope="col">Name</th>
-    <th scope="col">Phone</th>
-    <th scope="col">Designation</th>
-    <th scope="col">Email</th>
-    <th scope="col">Address</th>
-
-  </tr>
-  {% for employee in employee_info %}
-  <tr>
-    <td>{{ employee[0] }}</td>
-    <td>{{ employee[1] }}</td>
-    <td>{{ employee[2] }}</td>
-    <td>{{ employee[3] }}</td>
-    <td>{{ employee[4] }}</td>
-    <td>{{ employee[5] }}</td>
-
-  </tr>
-  {% endfor %}
-</table>
-
 {% endblock %}
