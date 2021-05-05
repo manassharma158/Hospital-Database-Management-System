@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class='container'>
+              </br></br></br>
+
+     {% if msg == 'Incorrect LoginID or Password!' %}
+     <div class="alert alert-danger">{{ msg }}</div>
+     {% endif %}
+
+     <h3>Login Page</h3>
+     <form method="POST" action='/login'>
+
+     <label for="loginid">LoginID</label>
+     <input type="text" class="form-control" id="loginid" name='login_id' placeholder="Enter Login ID" >
+
+<br>
+     <label for="password">Password</label>
+     <input type="password" class="form-control" id="name" name='password' placeholder="Enter Password" >
+    </br></br>
+
+     <input type="submit" value='Log In' class="btn btn-primary">
+
+ </div>
+
+{% endblock %}

@@ -18,6 +18,8 @@
 
     <meta charset="utf-8">
 
+    <title>IITPKD-Hospital</title>
+
   </head>
 
   <body>
@@ -42,6 +44,24 @@
           <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
             About Us
           </a>
+
+       {% if session['loggedin'] %}
+
+      <li class="nav-item">
+      	<a class="nav-link" href="/logout" id="" role="button" data-toggle="" aria-expanded="false">
+      		Logout
+      	</a>
+
+      {% else %}
+      
+      <a class="nav-link" href="/login" id="" role="button" data-toggle="" aria-expanded="false">
+      	Login
+      </a>
+
+      {% endif %}
+
+
+
 	  </li>
 
       </ul>
@@ -51,6 +71,6 @@
 
     {% block content %}
 
-    {% endblock %}
+    {% endblock content %}
   </body>
 </html>
