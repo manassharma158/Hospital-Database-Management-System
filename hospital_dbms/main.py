@@ -40,6 +40,42 @@ def patients():
 
     return ("<h2>No patient entry in the database</h2>")
 
+@app.route('/patient_reg', methods = ['GET', 'POST'])
+def patient_registration():
+	if request.method == 'POST':
+		already_registered = request.form['already_registered']
+		cur = mysql.connection.cursor()
+		pids = cur.execute("SELECT id FROM employees")
+		pids = cur.fetchall()
+
+
+		if already_registered == 'Yes':
+			id = request.form['id']
+			p_id = (id, )
+			if p_id not in pids:
+				return ('<h2>Patient with this ID doesn\'t exists. Please enter valid ID.</h2>')
+			else:
+				cur.execute("UPDATE patients SET discharged = '0' medicines = NULL doctors = NULL WHERE patient_id = '{}'".format(id))
+				mysql.connection.commit()
+				cur.close()
+				return render_template("patinet_registered.html");
+		else:
+			id = request.form['id']
+			name = request.form['name']
+			contact = request.form['contact']
+			dob =  request.form['dob']
+			address = request.form['address']
+			p_id = (id, )
+			if p_id in pids:
+				return render_template("patient_already_exists.html", id = id)
+			else:
+				cur.execute("call new_patient(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\')" % (id, name, dob, contact, address))
+				mysql.connection.commit()
+				cur.close()
+				return render_template("patient_registered.html")
+
+	return render_template("patient_registration.html")
+
 @app.route('/delete', methods=['GET', 'POST'])
 def employee_deletion():
 	if request.method == 'POST':
@@ -92,7 +128,7 @@ def employee_reg():
 		# checking for duplicate entry
 		eid = (id,)
 		if eid in ids:
-		    return render_template("already_exists.html", id = id, name = name)
+		    return render_template("already_exists.html", id = id)
 		else:
 			if designation == "Doctor":
 				cur.execute("call hire_doctor(\'%s\',\'%s\', \'%s\', NULL,\'%s\', \'%s\', %.2f)" % (id, name, contact, email, address, float(salary)))
