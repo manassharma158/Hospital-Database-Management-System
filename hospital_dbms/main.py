@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, session
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -16,7 +16,7 @@ mysql = MySQL(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', msg='HOME')
 
 @app.route('/employees')
 def employees():
@@ -171,6 +171,45 @@ def admin_index():
 def staff_index():
 	return render_template('staff_index.html')
 
+# Admin Login Functionality
+
+@app.route('/login', methods =['GET', 'POST'])
+def login():
+    msg = ''
+    if request.method == 'POST' and 'login_id' in request.form and 'password' in request.form:
+        username = request.form['login_id']
+        password = request.form['password']
+        access_level = 'Admin'
+        print(username, password)
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM users WHERE login_id = %s AND password = %s AND access_level= %s', (username, password, access_level))
+        account = cur.fetchone()
+        if account:
+            print(session)
+            session['loggedin'] = True
+            print(account)
+            print(session)
+            # session['id'] = account['id']
+            # session['username'] = account['name']
+            msg = 'Logged in'
+            print("SUCCESS!")
+            return redirect(url_for('index'))
+        else:
+            msg = 'Incorrect LoginID or Password!'
+            print("FAIL")
+    return render_template('login.html', msg = msg)
+
+@app.route('/logout')
+def logout():
+    session.pop('loggedin', None)
+    # session.pop('id', None)
+    # session.pop('username', None)
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
+    app.secret_key = 'super secret key'
+    # app.config['SESSION_TYPE'] = 'filesystem'
+
+    # sess.init_app(app)
+
     app.run(debug=True)
