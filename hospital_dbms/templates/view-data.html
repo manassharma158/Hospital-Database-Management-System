@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="jumbotron text-center">
+
+<h3>Choose the table to explore</h3>
+
+<form method="POST" action="/admin/view-data">
+
+  <!-- <label for="designation">Designation</label> -->
+  <select class="form-control" id='table' name='table'>
+    {% for table in tables %}
+    <option>{{table[0]}}</option>
+    {% endfor %}
+  </select>
+  <input type="submit" value='Show Data' class="btn btn-primary">
+
+</form>
+<br>
+
+  {% if table %}
+
+  <h3>{{ table }} table </h3>
+<br>
+  <div class="container text-center">
+  	<table class='table table-striped' border="1">
+
+  	  <tr class='thead-dark'>
+        {% for label in labels %}
+  	    <th scope="col">{{label[3]}}</th>
+        {% endfor %}
+  	  </tr>
+
+  	  {% for entry in data %}
+  	  <tr>
+        {% for col in entry %}
+  	    <td>{{ col }}</td>
+  	     {% endfor %}
+  	  </tr>
+  	  {% endfor %}
+  	</table>
+  </div>
+
+  {% endif%}
+
+
+</div>
+
+
+{% endblock %}

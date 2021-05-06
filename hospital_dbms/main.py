@@ -145,6 +145,16 @@ def book_appointment():
 
 	return render_template('book_appointment.html')
 
+# @app.route('/appointments')
+# def appointments():
+# 	cur = mysql.connection.cursor()
+# 	appointments = cur.execute("SELECT * FROM appointment_details")
+# 	if appointments > 0:
+# 	    appointment_info = cur.fetchall()
+# 	    return render_template('appointments.html', appointment_info = appointment_info)
+#
+# 	return ("<h2>No appointment entry in the database</h2>")
+
 @app.route('/register', methods=['GET', 'POST'])
 def employee_reg():
 	if request.method == 'POST':
@@ -242,6 +252,25 @@ def logout():
     # session.pop('id', None)
     # session.pop('username', None)
     return redirect(url_for('index'))
+
+@app.route('/admin/view-data', methods = ['GET', 'POST'])
+def view_data():
+    cur = mysql.connection.cursor()
+    tables = cur.execute("show full tables where Table_Type = 'BASE TABLE'")
+    tables = cur.fetchall()
+
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        table = request.form['table']
+        print(table)
+        labels = cur.execute("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = \'{}\'".format(table))
+        labels = cur.fetchall()
+        data = cur.execute("SELECT * FROM {}".format(table))
+        data = cur.fetchall()
+        print(labels)
+        return render_template('view-data.html', tables=tables, table=table, labels=labels, data=data)
+    print(tables)
+    return render_template('view-data.html', tables = tables)
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
