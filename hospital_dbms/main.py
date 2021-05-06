@@ -32,7 +32,7 @@ def employees():
 @app.route('/patients')
 def patients():
     cur = mysql.connection.cursor()
-    patients = cur.execute("SELECT * from Patients")
+    patients = cur.execute("SELECT * from Patients where discharged = '0'")
 
     if patients > 0:
         patients_info = cur.fetchall()
@@ -40,39 +40,46 @@ def patients():
 
     return ("<h2>No patient entry in the database</h2>")
 
+@app.route('/patient_reg_main')
+def patient_reg_main():
+	return render_template('patient_main_reg.html')
+
+@app.route('/already_reg', methods = ['GET', 'POST'])
+def already_registered():
+	if request.method == 'POST':
+		cur = mysql.connection.cursor()
+		pids = cur.execute("SELECT patient_ID FROM patients")
+		pids = cur.fetchall()
+		id = request.form['id']
+		p_id = (id, )
+		if p_id not in pids:
+			return ('<h2>patient with this ID doesnot exists. Please enter valid patient ID.</h2>')
+		else:
+			cur.execute("UPDATE patients set discharged = '0', doctors = NULL, room = NULL, medicine = NULL where patient_ID = \'%s\'"%(id))
+			mysql.connection.commit()
+			cur.close()
+			return redirect(url_for('patient_success'))
+	return render_template('already_registered.html')
+
 @app.route('/patient_reg', methods = ['GET', 'POST'])
 def patient_registration():
 	if request.method == 'POST':
-		already_registered = request.form['already_registered']
 		cur = mysql.connection.cursor()
-		pids = cur.execute("SELECT id FROM employees")
+		pids = cur.execute("SELECT patient_ID FROM patients")
 		pids = cur.fetchall()
-
-
-		if already_registered == 'Yes':
-			id = request.form['id']
-			p_id = (id, )
-			if p_id not in pids:
-				return ('<h2>Patient with this ID doesn\'t exists. Please enter valid ID.</h2>')
-			else:
-				cur.execute("UPDATE patients SET discharged = '0' medicines = NULL doctors = NULL WHERE patient_id = '{}'".format(id))
-				mysql.connection.commit()
-				cur.close()
-				return render_template("patinet_registered.html");
+		id = request.form['id']
+		p_id = (id, )
+		name = request.form['name']
+		contact = request.form['contact']
+		dob =  request.form['dob']
+		address = request.form['address']
+		if p_id in pids:
+			return render_template("patient_already_exists.html", id = id)
 		else:
-			id = request.form['id']
-			name = request.form['name']
-			contact = request.form['contact']
-			dob =  request.form['dob']
-			address = request.form['address']
-			p_id = (id, )
-			if p_id in pids:
-				return render_template("patient_already_exists.html", id = id)
-			else:
-				cur.execute("call new_patient(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\')" % (id, name, dob, contact, address))
-				mysql.connection.commit()
-				cur.close()
-				return render_template("patient_registered.html")
+			cur.execute("call new_patient(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\')" % (id, name, dob, contact, address))
+			mysql.connection.commit()
+			cur.close()
+			return redirect(url_for('patient_success'))
 
 	return render_template("patient_registration.html")
 
@@ -147,6 +154,10 @@ def employee_reg():
 @app.route('/success', methods=['GET', 'POST'])
 def success():
 	return render_template("employee_registered.html")
+
+@app.route('/patient_success', methods = ['GET', 'POST'])
+def patient_success():
+	return render_template("patient_registered.html")
 
 @app.route('/patient-index')
 def patient_index():

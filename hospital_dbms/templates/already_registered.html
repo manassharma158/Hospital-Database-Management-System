@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="jumbotron">
+
+<h3>Patient Registration Form</h3>
+<form method="POST" action='/already_reg'>
+
+	<label for="id">Patient ID</label>
+	<input type="text" class="form-control" id="id" name='id' placeholder="Enter patient ID" >
+
+	<input type="submit" value='Register' class="btn btn-primary">
+
+</form>
+
+</div>
+
+
+
+{% endblock %}
