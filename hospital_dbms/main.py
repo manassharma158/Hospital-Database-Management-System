@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
+
 # Database confirgurations
 app.config['MYSQL_HOST'] = "localhost"
 app.config['MYSQL_USER'] = "hospital_admin"
@@ -210,15 +211,15 @@ def patient_success():
 def patient_index():
 	return render_template('patient_index.html')
 
-@app.route('/admin-index')
-def admin_index():
-	return render_template('admin_index.html')
 
 @app.route('/staff-index')
 def staff_index():
-	return render_template('staff_index.html')
+    return render_template('staff_index.html')
 
 # Admin Login Functionality
+@app.route('/admin-index')
+def admin_index():
+    return render_template('admin_index.html')
 
 @app.route('/login', methods =['GET', 'POST'])
 def login():
