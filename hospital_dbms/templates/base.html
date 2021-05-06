@@ -44,25 +44,25 @@
           <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
             About Us
           </a>
-
+	  </li>
        {% if session['loggedin'] %}
 
       <li class="nav-item">
       	<a class="nav-link" href="/logout" id="" role="button" data-toggle="" aria-expanded="false">
       		Logout
       	</a>
-
+		</li>
       {% else %}
-      
+      <li>
       <a class="nav-link" href="/login" id="" role="button" data-toggle="" aria-expanded="false">
       	Login
       </a>
-
+	   </li>
       {% endif %}
 
 
 
-	  </li>
+
 
       </ul>
     </div>

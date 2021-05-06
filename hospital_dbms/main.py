@@ -115,6 +115,35 @@ def employee_deletion():
 	employees_info = cur.fetchall()
 	return render_template('employee_deletion.html', employees_info=employees_info)
 
+@app.route('/book_appointment', methods = ['GET', 'POST'])
+def book_appointment():
+	if request.method == 'POST':
+		p_ID = request.form['p_ID']
+		d_ID = request.form['d_ID']
+		time_slot = request.form['time_slot']
+		cur = mysql.connection.cursor()
+		pids = cur.execute("SELECT patient_ID FROM patients WHERE discharged = '0'")
+		pids = cur.fetchall()
+		dids = cur.execute("SELECT id FROM doctors")
+		dids = cur.fetchall()
+		apids = cur.execute("SELECT patient_ID FROM appointments")
+		apids = cur.fetchall()
+		pID = (p_ID, )
+		dID = (d_ID, )
+		status = 2;
+		if pID not in pids or dID not in dids:
+			status = 0
+			return render_template('appointment_result.html', status = status, p_ID = p_ID)
+		elif pID in apids:
+			status = 1
+			return render_template('appointment_result.html', status = status, p_ID = p_ID)
+		else:
+			cur.execute("INSERT INTO appointments VALUES ('%s', '%s', '%s')"% (p_ID, d_ID, time_slot))
+			mysql.connection.commit()
+			cur.close()
+			return render_template('appointment_result.html', status = status, p_ID = p_ID)
+
+	return render_template('book_appointment.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def employee_reg():
@@ -126,9 +155,7 @@ def employee_reg():
 		email = request.form['email']
 		address = request.form['address']
 		salary = request.form['salary']
-
 		cur = mysql.connection.cursor()
-
 		ids = cur.execute("SELECT id FROM employees")
 		ids = cur.fetchall()
 
@@ -150,6 +177,16 @@ def employee_reg():
 		return redirect(url_for('success'))
 
 	return render_template('employee_registration.html')
+
+@app.route('/appointments')
+def appointments():
+	cur = mysql.connection.cursor()
+	appointments = cur.execute("SELECT * FROM appointment_details")
+	if appointments > 0:
+	    appointment_info = cur.fetchall()
+	    return render_template('appointments.html', appointment_info = appointment_info)
+
+	return ("<h2>No appointment entry in the database</h2>")
 
 @app.route('/success', methods=['GET', 'POST'])
 def success():

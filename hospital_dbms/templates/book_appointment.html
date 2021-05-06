@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="jumbotron">
+
+<h3>Assign Appoitment</h3>
+<form method="POST" action='/book_appointment'>
+
+	<label for="p_ID">Patient ID</label>
+	<input type="text" class="form-control" id="p_ID" name='p_ID' placeholder="Enter patient ID" >
+
+	<label for="d_ID">Doctor ID</label>
+	<input type="text" class="form-control" id="d_ID" name='d_ID' placeholder="Enter Doctor ID" >
+
+	<label for="time_slot">Time Slot</label>
+	<input type="text" class="form-control" id="time_slot" name='time_slot' placeholder="Enter Time Slot (24 hour format) Eg. (14:00-14:30)">
+	<br>
+	<input type="submit" value='Register' class="btn btn-primary">
+
+</form>
+
+</div>
+
+{% endblock %}

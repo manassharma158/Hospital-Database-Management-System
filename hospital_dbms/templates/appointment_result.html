@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if status == 0 %}
+<div class="jumbotron text-center">
+
+<div class="alert alert-warning" role="alert" align="center">
+  Invalid details!!! Please Enter valid details
+</div>
+
+<a href="/book_appointment"><button type="button" class="btn btn-primary btn-lg">Assign again</button></a>
+
+</div>
+
+{% elif status == 1 %}
+
+<div class="jumbotron text-center">
+
+<div class="alert alert-warning" role="alert" align="center">
+	Appoitment details for patient <b>{{ p_ID }}</b> already exists
+</div>
+
+<a href="/book_appointment"><button type="button" class="btn btn-primary btn-lg">Assign again</button></a>
+
+</div>
+
+{% else %}
+
+<div class="jumbotron text-center">
+
+<div class="alert alert-success" role="alert" align="center">
+	Appoitment details for patient <b>{{ p_ID }}</b> has been successfully assigned.
+</div>
+
+<a href="/appointments"><button type="button" class="btn btn-primary btn-lg">View Updated Appointments</button></a>
+
+</div>
+{% endif %}
+{% endblock %}
