@@ -99,6 +99,8 @@ def employee_deletion():
 			return ('<h2>Employee with this ID doesnot exists. Please enter valid ID.</h2>')
 		else:
 			if designation == "[Doctor]":
+				cur.execute("DELETE FROM appointments WHERE doctor_ID = \'{}\'".format(eid[0]))
+				cur.execute("UPDATE patients SET doctors = NULL WHERE doctors = \'{}\'".format(eid[0]))
 				cur.execute("DELETE FROM doctors WHERE id = \'{}\'".format(eid[0]))
 			elif designation == "[Nurses]":
 				cur.execute("DELETE FROM nurses WHERE id = \'{}\'".format(eid[0]))
